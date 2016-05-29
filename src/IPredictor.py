@@ -20,3 +20,7 @@ class IPredictor():
     @abstractmethod
     def Load(self, dump_file):
         """Load trained predictor from dump_file"""
+
+    @abstractmethod
+    def ForgetKnowledge(self):
+        """Reset trained memory"""

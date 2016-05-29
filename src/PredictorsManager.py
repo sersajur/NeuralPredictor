@@ -63,6 +63,7 @@ class PredictorsManager:
     def _OnTrainAction():
         method_name = PredictorsManager.g_view.GetSelectedMethodName()
         predictor = PredictorsManager._ChooseAppropriateMethod(method_name)
+        predictor.ForgetKnowledge()
 
         train_data_path = PredictorsManager.g_view.GetTrainDataPath()
         if not isfile(train_data_path):

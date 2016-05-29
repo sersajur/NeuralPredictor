@@ -15,3 +15,6 @@ class RNNPredictorEx(IPredictor):
 
     def Train(self, train_dataset, error_observer, dump_file):
         return
+
+    def ForgetKnowledge(self):
+        return

@@ -94,6 +94,8 @@ class RNNPredictor(IPredictor):
         dump_file = open(dump_file, 'wb')
         pickle.dump(self.m_net, dump_file)
 
+    def ForgetKnowledge(self):
+        self.m_net = RNNPredictor._CreateRecurentNN()
 
     @staticmethod
     def _CreateRecurentNN():
