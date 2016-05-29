@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from socket import meth
 
 import wx
-
+from PlotWidget import PlotWidget
+from datetime import datetime
 
 class View(wx.Frame):
     def __init__(self):
         self.app = wx.App(False)
 
-        wx.Frame.__init__(self, None, title="Nocturnal hypoglycemia prediction", size=(1000, 600))
+        wx.Frame.__init__(self, None, title="Nocturnal hypoglycemia prediction", size=(1100, 800))
         panel = wx.Panel(self)
 
         label = wx.StaticText(panel, label="Train dataset path:", pos=(10, 10))
@@ -25,9 +27,10 @@ class View(wx.Frame):
         self.m_test_button = wx.Button(panel, label="Test", pos=(10, 160), size=wx.DefaultSize)
         self.m_train_button = wx.Button(panel, label="Train", pos=(110, 160), size=wx.DefaultSize)
 
-        label = wx.StaticText(panel, label="Prediction log:", pos=(10, 300))
-        self.m_log = wx.TextCtrl(panel, pos=(10, 320), size=(960, 200), style=wx.TE_MULTILINE | wx.CB_READONLY)
+        label = wx.StaticText(panel, label="Prediction log:", pos=(10, 200))
+        self.m_log = wx.TextCtrl(panel, pos=(10, 220), size=(360, 480), style=wx.TE_MULTILINE | wx.CB_READONLY)
 
+        self.plot = PlotWidget(panel, pos=(400, 220), size=(10, 20))
     # Custom bindings
     def SetOnTestAction(self, on_test_action):
         self.Bind(wx.EVT_BUTTON, lambda x: on_test_action(), self.m_test_button)
@@ -35,7 +38,13 @@ class View(wx.Frame):
     def SetOnTrainAction(self, on_train_action):
         self.Bind(wx.EVT_BUTTON, lambda x: on_train_action(), self.m_train_button)
 
-    # Custom getters
+    # Custom functions
+    def UpdateMethodList(self, i_method_list):
+        self.m_predictor_combobox.Clear()
+        for method in i_method_list:
+            self.m_predictor_combobox.Append(method)
+        self.m_predictor_combobox.SetSize((200, -1))
+
     def GetSelectedMethodName(self):
         return self.m_predictor_combobox.GetValue()
 
@@ -46,14 +55,15 @@ class View(wx.Frame):
         return self.m_test_dataset_path_edit.GetValue()
 
     def PrintToLog(self, i_text):
-        self.m_log.AppendText(i_text + '\n')
+        self.m_log.AppendText('[' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] ' + i_text + '\n')
+
+    def PlotGraph(self, x_arr, y_arr, col):
+        self.plot.draw(x_arr, y_arr, col)
+
+    def ClearGraph(self):
+        self.plot.clear()
 
     # Run (all settings must be done before this function run)
     def Run(self):
         self.Show(True)
         self.app.MainLoop()
-
-v = View()
-v.SetOnTestAction(lambda: v.PrintToLog(u"test"))
-v.SetOnTrainAction(lambda: v.PrintToLog(u"train"))
-v.Run()
