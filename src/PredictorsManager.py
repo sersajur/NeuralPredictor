@@ -8,6 +8,8 @@ from os.path import isdir, isfile
 from RNNPredictor import RNNPredictor
 from RNNPredictorEx import RNNPredictorEx
 from DataReader import ReadDataSet
+from DayFeatureExpert import DayFeatureExpert
+from PredictValidator import PredictValidator
 from numpy import arange
 import thread
 
@@ -40,6 +42,24 @@ class PredictorsManager:
             mkdir(dump_dir)
 
     @staticmethod
+    def _ValidatePredictor(predictor):
+        test_data_path = PredictorsManager.g_view.GetTestDataPath()
+        if not isfile(test_data_path):
+            PredictorsManager.g_view.PrintToLog("Test dataset file does not exist!")
+            return
+
+        data_set = ReadDataSet(test_data_path)
+        expected_arr = map(lambda x: DayFeatureExpert.IsHypoglycemia(x), data_set)
+        actual_arr = map(lambda x: predictor.Predict(x), data_set)
+        validator = PredictValidator(expected_arr, actual_arr)
+
+        PredictorsManager.g_view.PrintToLog("TPR: " + str(validator.TruePositiveRate()))
+        PredictorsManager.g_view.PrintToLog("TNR: " + str(validator.TrueNegativeRate()))
+        PredictorsManager.g_view.PrintToLog("PPV: " + str(validator.PositivePredictiveValue()))
+        PredictorsManager.g_view.PrintToLog("NPV: " + str(validator.NegativePredictiveValue()))
+        PredictorsManager.g_view.PrintToLog("F1 score: " + str(validator.F1Score()))
+
+    @staticmethod
     def _OnTrainAction():
         method_name = PredictorsManager.g_view.GetSelectedMethodName()
         predictor = PredictorsManager._ChooseAppropriateMethod(method_name)
@@ -57,15 +77,37 @@ class PredictorsManager:
             PredictorsManager.g_view.PlotGraph(arange(0, len(test_err_list)), test_err_list, 'g')
 
         def training_task_function():
+            PredictorsManager.g_view.PrintToLog("=============================")
+            PredictorsManager.g_view.PrintToLog("Predictor: " + predictor.name)
             PredictorsManager.g_view.PrintToLog("Training starts")
             predictor.Train(data_set, error_reporter, PredictorsManager._GetDumpFile(method_name))
+            PredictorsManager.g_view.PrintToLog("Testing predictor:")
+            PredictorsManager._ValidatePredictor(predictor)
             PredictorsManager.g_view.PrintToLog("Training ends")
 
         thread.start_new_thread(training_task_function, ())
 
     @staticmethod
     def _OnTestAction():
-        return
+        method_name = PredictorsManager.g_view.GetSelectedMethodName()
+        predictor = PredictorsManager._ChooseAppropriateMethod(method_name)
+
+        dump_file_name = PredictorsManager._GetDumpFile(method_name)
+        if not isfile(dump_file_name):
+            PredictorsManager.g_view.PrintToLog("Dump file does not exist: " + dump_file_name)
+            return
+        if not predictor.Load(dump_file_name):
+            PredictorsManager.g_view.PrintToLog("Could not load trained predictor from file: " + dump_file_name)
+            return
+
+        def testing_task_function():
+            PredictorsManager.g_view.PrintToLog("=============================")
+            PredictorsManager.g_view.PrintToLog("Predictor: " + predictor.name)
+            PredictorsManager.g_view.PrintToLog("Testing predictor:")
+            PredictorsManager._ValidatePredictor(predictor)
+
+
+        thread.start_new_thread(testing_task_function, ())
 
     @staticmethod
     def _Init():
