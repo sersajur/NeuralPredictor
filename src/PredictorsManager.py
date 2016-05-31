@@ -6,6 +6,7 @@ from View import View
 from os import mkdir
 from os.path import isdir, isfile
 from RNNPredictor import RNNPredictor
+from FNNPredictor import FNNPredictor
 from RNNPredictorEx import RNNPredictorEx
 from DataReader import ReadDataSet
 from DayFeatureExpert import DayFeatureExpert
@@ -77,11 +78,14 @@ class PredictorsManager:
             PredictorsManager.g_view.PlotGraph(arange(0, len(train_err_list)), train_err_list, 'r')
             PredictorsManager.g_view.PlotGraph(arange(0, len(test_err_list)), test_err_list, 'g')
 
+        def logger(msg):
+            PredictorsManager.g_view.PrintToLog(predictor.name + ' trainer: ' + msg)
+
         def training_task_function():
             PredictorsManager.g_view.PrintToLog("=============================")
             PredictorsManager.g_view.PrintToLog("Predictor: " + predictor.name)
             PredictorsManager.g_view.PrintToLog("Training starts")
-            predictor.Train(data_set, error_reporter, PredictorsManager._GetDumpFile(method_name))
+            predictor.Train(data_set, error_reporter, logger, PredictorsManager._GetDumpFile(method_name))
             PredictorsManager.g_view.PrintToLog("Testing predictor:")
             PredictorsManager._ValidatePredictor(predictor)
             PredictorsManager.g_view.PrintToLog("Training ends")
@@ -114,6 +118,7 @@ class PredictorsManager:
     def _Init():
         PredictorsManager._RegisterPredictor(RNNPredictor())
         PredictorsManager._RegisterPredictor(RNNPredictorEx())
+        PredictorsManager._RegisterPredictor(FNNPredictor())
 
         PredictorsManager.g_view.UpdateMethodList(PredictorsManager.g_predictors.keys())
 

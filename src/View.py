@@ -15,11 +15,11 @@ class View(wx.Frame):
 
         label = wx.StaticText(panel, label="Train dataset path:", pos=(10, 10))
         self.m_train_dataset_path_edit = wx.TextCtrl(panel, pos=(10, 30), size=(800, 20))
-        self.m_train_dataset_path_edit.SetValue(u"D:\GDrive\Диплом 2\DataPreparation\output1\\fixed_dataset+_validate_known.xlsx")
+        self.m_train_dataset_path_edit.SetValue(u"D:\GDrive\Диплом 2\DataPreparation\output1\\fixed_dataset+_train.xlsx")
 
         label = wx.StaticText(panel, label="Test dataset path:", pos=(10, 60))
         self.m_test_dataset_path_edit = wx.TextCtrl(panel, pos=(10, 80), size=(800, 20))
-        self.m_test_dataset_path_edit.SetValue(u"D:\GDrive\Диплом 2\DataPreparation\output1\\fixed_dataset+_train.xlsx")
+        self.m_test_dataset_path_edit.SetValue(u"D:\GDrive\Диплом 2\DataPreparation\output1\\fixed_dataset+_validate_known.xlsx")
 
         label = wx.StaticText(panel, label="Choose method:", pos=(10, 110))
         self.m_predictor_combobox = wx.ComboBox(panel, pos=(10, 130), size=wx.DefaultSize, choices=['stub RNN', 'stub RNN+demographic'], style=wx.CB_READONLY)
