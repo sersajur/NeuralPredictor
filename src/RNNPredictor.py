@@ -57,7 +57,7 @@ class RNNPredictor(IPredictor):
             print output
         return output[0] > output[1]
 
-    def Train(self, dataset, error_observer, dump_file):
+    def Train(self, dataset, error_observer, logger, dump_file):
         gradientCheck(self.m_net)
 
         net_dataset = SequenceClassificationDataSet(4, 2)

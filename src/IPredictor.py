@@ -14,7 +14,7 @@ class IPredictor():
         """Predict hypoglycemia"""
 
     @abstractmethod
-    def Train(self, train_dataset, error_observer,  dump_file):
+    def Train(self, train_dataset, error_observer, logger, dump_file):
         """Train on train_dataset"""
 
     @abstractmethod

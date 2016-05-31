@@ -13,7 +13,7 @@ class RNNPredictorEx(IPredictor):
     def Predict(self, pt_record):
         return True
 
-    def Train(self, train_dataset, error_observer, dump_file):
+    def Train(self, train_dataset, error_observer, logger, dump_file):
         return
 
     def ForgetKnowledge(self):
