@@ -1,3 +1,5 @@
+from math import sqrt
+
 
 class PredictValidator:
 
@@ -37,3 +39,13 @@ class PredictValidator:
 
     def F1Score(self):
         return 2 * float(self.m_TP) / (2 * self.m_TP + self.m_FP + self.m_FN)
+
+    def F1ScoreDual(self):
+        return 2 * float(self.m_TN) / (2 * self.m_TN + self.m_FN + self.m_FP)
+
+    def MatthewsCorCoef(self):
+        tp = float(self.m_TP)
+        tn = float(self.m_TN)
+        fp = float(self.m_FP)
+        fn = float(self.m_FN)
+        return (tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))

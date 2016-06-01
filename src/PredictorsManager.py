@@ -59,6 +59,8 @@ class PredictorsManager:
         PredictorsManager.g_view.PrintToLog("PPV: " + str(validator.PositivePredictiveValue()))
         PredictorsManager.g_view.PrintToLog("NPV: " + str(validator.NegativePredictiveValue()))
         PredictorsManager.g_view.PrintToLog("F1 score: " + str(validator.F1Score()))
+        PredictorsManager.g_view.PrintToLog("F1 score dual: " + str(validator.F1ScoreDual()))
+        PredictorsManager.g_view.PrintToLog("MCC: " + str(validator.MatthewsCorCoef()))
 
     @staticmethod
     def _OnTrainAction():
